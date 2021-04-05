@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Files Tags</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/bootstrap.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/font-awesome.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/animate.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/select2.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/perfect-scrollbar.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/util.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/main.css') }}">
+
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+	<div class="limiter">
+		<input
+			placeholder="Enter the fullpath / relative path to server"
+			id="folder-in"
+			style="width: 400px;"
+		></input>
+		<br>
+		<button onClick="processFolder()">AutoTag Files</button>
+		<div class="container-table100">
+			<div class="wrap-table100">
+				<div class="table">
+					<div class="row header">
+						<div class="cell">
+							File Name
+						</div>
+						<div class="cell">
+							Tags
+						</div>
+					</div>
+
+					{% for f in data %}
+					<div class="row">
+						<div class="cell" data-title="File Name">{{ f['file'] }}</div>
+						<div class="cell" data-title="Tags"> {{ f['tags'] }} </div>
+					</div>
+					{% endfor %}
+
+				</div>
+
+
+				<script src="{{ url_for('static', path='/jquery-3.2.1.min.js') }}"></script>
+				<script src="{{ url_for('static', path='/popper.js') }}"></script>
+				<script src="{{ url_for('static', path='/bootstrap.min.js') }}"></script>
+				<script src="{{ url_for('static', path='/select2.min.js') }}"></script>
+				<script src="{{ url_for('static', path='/main.js') }}"></script>
+
+				<script type="text/javascript">
+
+				function processFolder() {
+					console.log("ASDFASDFASD");
+					var x = document.getElementById("folder-in").value;
+					console.log(x);
+					$.get(
+						url="/",
+						data= {"folder": x},
+						success=function (data){
+							$('html').html(data);
+						}
+					)
+				}
+
+				</script>
+</body>
+
+</html>
