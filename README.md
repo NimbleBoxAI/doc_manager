@@ -8,6 +8,10 @@ This will open a server at `http://127.0.0.1:8000` and you can search in a speci
 
 <img src="assets/clip.gif">
 
+### Model
+
+The model is a `distilbert-base-uncased` BERT model, whose outputs are summed up and passed through a linear layer (kernel).
+
 ### Packages
 
 Install packages using command:

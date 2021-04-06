@@ -48,7 +48,6 @@ class Processor:
       output = self.model(**encodings).last_hidden_state
       logits = torch.sum(output, dim = 1) # pool the outputs
     logits = logits.cpu().numpy()
-    print(logits.shape)
 
     # now to the linear kernel
     # logits = logits @ weights + bias
@@ -69,11 +68,5 @@ class Processor:
 
     # get embeddings from the model
     classes = self.classify(all_text)
-    print(classes)
     class_labels = [self.class_to_id[x] for x in classes]
     return class_labels
-
-
-
-
-
