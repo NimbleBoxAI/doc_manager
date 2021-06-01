@@ -1,6 +1,7 @@
-import glob
+import re
 import textract
 import numpy as np
+from glob import glob
 
 import torch
 from torch import nn
@@ -11,6 +12,7 @@ tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
 model = AutoModel.from_pretrained("distilbert-base-uncased")
 
 # load all the text
+files = glob("./sample/*.pdf")
 all_text = []
 for f in files:
   text = textract.process(f, method='pdfminer')
@@ -38,7 +40,7 @@ class ClassifierHead(nn.Module):
 
 c = ClassifierHead(768, 3)
 
-
+optim = torch.optim.AdamOptimizer(c.parameters())
 t = torch.Tensor([0, 1, 2, 0, 1, 5, 6]).long() # define target method
 for i in range(10):
   out = c(logits)

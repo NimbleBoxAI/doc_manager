@@ -19,6 +19,11 @@ Install packages using command:
 pip3 install -r requirements.txt --user
 ```
 
+This demo requires `textract` for parsing PDF files which is difficult to install on Windows as shown in these links:
+- [Github Issue](https://github.com/deanmalmgren/textract/issues/111)
+- ✅ [stackoverflow](https://stackoverflow.com/questions/50743723/cant-install-textract-on-windows)
+- Installing [pdfminer](https://pdfminer-docs.readthedocs.io/pdfminer_index.html#source)
+
 ### Training Code
 
 Read `train.py` for better understanding of the training setup.
