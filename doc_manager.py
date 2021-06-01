@@ -55,6 +55,16 @@ class Processor:
     classes = (logits @ self.wb[:-1, :] + self.wb[-1]).argmax(-1)
     return classes
 
+  def read_pdf(self, filename) -> str:
+    if os.name == "nt":
+      # windows bypass for reading PDF files
+      text = ""
+    elif os.name == "posix":
+       #linux bypass for reading PDF files
+      text = textract.process(filename, method='pdfminer')
+      text = text.decode("utf-8")
+    return text
+
   def process(self, files):
     # load the text in the documents
     all_text = []
@@ -62,8 +72,8 @@ class Processor:
     for i in pbar:
       f = files[i]
       pbar.set_description(f"Opening >> {f[:30]}")
-      text = textract.process(f, method='pdfminer')
-      text = re.sub("\s+", " ", text.decode("utf-8"))
+      text = self.read_pdf(f)
+      text = re.sub("\s+", " ", )
       all_text.append(text)
 
     # get embeddings from the model
