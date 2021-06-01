@@ -19,10 +19,8 @@ Install packages using command:
 pip3 install -r requirements.txt --user
 ```
 
-This demo requires `textract` for parsing PDF files which is difficult to install on Windows as shown in these links:
-- [Github Issue](https://github.com/deanmalmgren/textract/issues/111)
-- ✅ [stackoverflow](https://stackoverflow.com/questions/50743723/cant-install-textract-on-windows)
-- Installing [pdfminer](https://pdfminer-docs.readthedocs.io/pdfminer_index.html#source)
+The earlier error with Windows was that the CLI was not able to find the correct executable for `pdf2text.py` called by `textract`.
+We shifted to a different package ([PyPDF2](https://pypi.org/project/PyPDF2/1.26.0/)) for handling PDF parsing in Windows system.
 
 ### Training Code
 
@@ -39,4 +37,3 @@ This is the description of the files:
 - `params.npy`: Classification Head paramters as a numpy array (np array is lighter than torch modules)
 - `requirements.py`
 - `train.py`: Sample code for training your own classifier head and save the `params.npy` file
-

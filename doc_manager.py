@@ -58,7 +58,13 @@ class Processor:
   def read_pdf(self, filename) -> str:
     if os.name == "nt":
       # windows bypass for reading PDF files
-      text = ""
+      import PyPDF2
+      with open(filename, 'rb') as pdf_file:
+        read_pdf = PyPDF2.PdfFileReader(pdf_file)
+        number_of_pages = read_pdf.getNumPages()
+        page = read_pdf.getPage(0)
+        page_content = page.extractText()
+        text = page_content
     elif os.name == "posix":
        #linux bypass for reading PDF files
       text = textract.process(filename, method='pdfminer')
@@ -73,7 +79,7 @@ class Processor:
       f = files[i]
       pbar.set_description(f"Opening >> {f[:30]}")
       text = self.read_pdf(f)
-      text = re.sub("\s+", " ", )
+      text = re.sub("\s+", " ", text)
       all_text.append(text)
 
     # get embeddings from the model
