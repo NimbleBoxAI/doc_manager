@@ -1,3 +1,48 @@
+"""What does any pytorch based training script look like:
+
+- class ModelConfig
+- class Model : nn.Module
+
+- class DataConfig
+- class Data : torch.utils.data.Dataset
+  - one for training: dstrain
+  - one for eval.   : dstest
+
+- class TrainerConfig
+  - batch_size
+  - lr
+  - n_step
+  ...
+
+- class Trainer
+  - train(): method to train
+    
+    dl_train = DataLoader(ds_train)
+    dl_test = DataLoader(ds_test)
+    
+    for input, global_step in zip(dl_train, range(n_training_steps)):
+      loss = model(input)
+      loss.backward()
+      optim.step()
+
+      if global_step % test_every_steps == 0:
+        test_loss = mean([
+          loss = model(test_input)
+          for test_input in dl_test
+        ])
+
+      if test_loss < previous_lowest_loss:
+        save_model()
+        no_improvement_evals = 0
+
+      else:
+        no_improvement_evals += 1
+
+      if no_improvement_evals == patience:
+        break training
+"""
+
+import os
 import re
 import textract
 import numpy as np
@@ -12,11 +57,28 @@ tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
 model = AutoModel.from_pretrained("distilbert-base-uncased")
 
 # load all the text
+def read_pdf(filename) -> str:
+  if os.name == "nt":
+    # windows bypass for reading PDF files
+    import PyPDF2
+    with open(filename, 'rb') as pdf_file:
+      read_pdf = PyPDF2.PdfFileReader(pdf_file)
+      number_of_pages = read_pdf.getNumPages()
+      page = read_pdf.getPage(0)
+      page_content = page.extractText()
+      text = page_content
+  elif os.name == "posix":
+      #linux bypass for reading PDF files
+    text = textract.process(filename, method='pdfminer')
+    text = text.decode("utf-8")
+  return text
+
+
 files = glob("./sample/*.pdf")
 all_text = []
 for f in files:
-  text = textract.process(f, method='pdfminer')
-  text = re.sub("\s+", " ", text.decode("utf-8"))
+  text = read_pdf(f)
+  text = re.sub("\s+", " ", text)
   all_text.append(text)
 
 
@@ -38,8 +100,9 @@ class ClassifierHead(nn.Module):
   def forward(self, x):
     return x@self.w + self.b
 
-c = ClassifierHead(768, 3)
+c = ClassifierHead(model.config.hidden_dim, 3)
 
+# train the model
 optim = torch.optim.AdamOptimizer(c.parameters())
 t = torch.Tensor([0, 1, 2, 0, 1, 5, 6]).long() # define target method
 for i in range(10):
